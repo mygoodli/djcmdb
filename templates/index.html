@@ -15,6 +15,7 @@
         <div class="layui-logo">业务管理平台</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item"><a title="菜单缩放" class="kit-side-fold"><i class="layui-icon layui-icon-shrink-right"  aria-hidden="true"></i></a></li>
       <li class="layui-nav-item"><a href="">控制台</a></li>
       <li class="layui-nav-item"><a href="">商品管理</a></li>
       <li class="layui-nav-item"><a href="">用户</a></li>
@@ -31,7 +32,7 @@
       <li class="layui-nav-item">
         <a href="javascript:;">
           <!--<img src="/" class="layui-nav-img">-->
-          {{ user.username }}
+            <i class="layui-icon layui-icon-friends"></i><span> {{ user.username }}</span>
         </a>
         <dl class="layui-nav-child">
           <dd><a href="">基本资料</a></dd>
@@ -47,7 +48,7 @@
             <!-- 左侧垂直导航区域-->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item">
-                    <a class="" href="javascript:;">主机管理</a>
+                    <a class="" href="javascript:;"><i class="layui-icon layui-icon-home"></i><span> 主机管理</span></a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="javascript:;" data-id="1" data-title="测试用户列表" data-url="{% url 'hostlist:hostlist' %}"
@@ -57,7 +58,7 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">游戏服管理</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-chart-screen"></i><span> 游戏服管理</span></a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="javascript:;" data-id="3" data-title="远程命令测试"
@@ -86,7 +87,7 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">系统管理</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-set-fill"></i><span> 系统管理</span></a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;">支付API设置</a></dd>
                         <dd><a href="javascript:;">公告设置</a></dd>
@@ -97,13 +98,13 @@
 
 
                 <li class="layui-nav-item">
-                    <a href="javascript:;">用户管理</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-group"></i><span> 用户管理</span></a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" data-id="6" data-title="管理员列表"
                                data-url="{% url 'Usermanagement:admin_list' %}" class="site-demo-active" data-type="tabAdd">管理员列表</a>
                         </dd>
                         <dd><a href="javascript:;" data-id="7" data-title="角色管理"
-                               data-url="{% url 'Usermanagement:admin_role_list' %}" class="site-demo-active" data-type="tabAdd">角色管理</a></dd>
+                               data-url="{% url 'Usermanagement:admin_group_list' %}" class="site-demo-active" data-type="tabAdd">权限组管理</a></dd>
                         <dd><a href="javascript:;">权限分类</a></dd>
                         <dd><a href="javascript:;">权限管理</a></dd>
                     </dl>
@@ -189,8 +190,45 @@
             var h = $(window).height();
             $("iframe").css("height",h+"px");
         }
+
+        var isShow = true;  //定义一个标志位
+        $('.kit-side-fold').click(function(){
+        //选择出所有的span，并判断是不是hidden
+        $('.layui-nav-item span').each(function(){
+            if($(this).is(':hidden')){
+                $(this).show();
+            }else{
+                $(this).hide();
+            }
+        });
+        //判断isshow的状态
+        if(isShow){
+            $('.layui-side.layui-bg-black').width(60); //设置宽度
+            $('.kit-side-fold i').css('margin-right', '70%');  //修改图标的位置
+            //将footer和body的宽度修改
+            $('.layui-body').css('left', 60+'px');
+            $('.layui-footer').css('left', 60+'px');
+            //将二级导航栏隐藏
+            $('dd span').each(function(){
+                $(this).hide();
+            });
+            //修改标志位
+            isShow =false;
+        }else{
+            $('.layui-side.layui-bg-black').width(200);
+            $('.kit-side-fold i').css('margin-right', '10%');
+            $('.layui-body').css('left', 200+'px');
+            $('.layui-footer').css('left', 200+'px');
+            $('dd span').each(function(){
+                $(this).show();
+            });
+            isShow =true;
+        }
     });
+ });
+
 
 </script>
+
 </body>
 </html>

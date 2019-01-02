@@ -74,9 +74,10 @@
     <!--数据表格右侧 -->
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="add_perm">用户权限</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">添加权限</a>
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="del_perm_all">清空权限</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="add_user">管理权限组用户</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
 </script>
 
 
@@ -92,19 +93,16 @@ layui.use(['table','layer'],function(){
 
   table.render({
       elem: '#test'
-      ,url:'{% url 'API:admin_list_api' %}'
+      ,url:'{% url 'API:admin_group_list_api' %}'
       ,toolbar: '#toolbarDemo'
       ,title: '用户数据表'
       ,cols: [[
           {type: 'checkbox', fixed: 'left'}
           ,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
-          ,{field:'username', title:'登录名', width:100,}
-          ,{field:'is_superuser', title:'角色', width:180, sort:true,templet:'#is_superuserTpl'}
-          ,{field:'email', title:'邮箱', }
-          ,{field:'last_login', title:'最近登录时间',width:150,}//templet: "<div>{% verbatim %}{{layui.util.toDateString(d.last_login, 'yyyy-MM-dd HH:mm:ss')}}{% endverbatim %}</div>"}
-          ,{field:'date_joined', title:'加入时间',width:150,}
-          ,{field:'is_active', title:'状态', width:230,templet:'#is_activeTpl'}
-          ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:200,}
+          ,{field:'name', title:'权限组', }
+          ,{field:'group_user', title:'权限组的用户', }
+          ,{field:'perms', title:'拥有的权限', }
+          ,{fixed: 'right', title:'操作', toolbar: '#barDemo',}
       ]]
       ,page: true
       ,id: 'testReload',
@@ -140,14 +138,14 @@ layui.use(['table','layer'],function(){
             $('#admin_add').click(function () {
                 layer.open({
                     type: 2,
-                    title: '添加管理员',
+                    title: '添加权限组',
                     offset: '100px',
-                    area : ['500px' , '400px'],
+                    area : ['500px' , '200px'],
                     //closeBtn:false,
                     shadeClose: true,
                     //btn: ['修改', '取消'],
                     scrollbar: false,//禁止浏览器滚动
-                    content:'{% url 'Usermanagement:admin_add' %}',
+                    content:'{% url 'Usermanagement:admin_group_add' %}',
                 });
             })
         });
@@ -166,6 +164,7 @@ layui.use(['table','layer'],function(){
                     return;
                 }
                 var ids = "";
+
                 for (var i=0;i<checkStatus.data.length;i++){
                     ids += checkStatus.data[i].id+",";
                 }
@@ -175,7 +174,7 @@ layui.use(['table','layer'],function(){
                     $.ajax({
                         type: "DELETE",
                         headers:{ "X-CSRFtoken":token},
-                        url:'{% url 'API:admin_detail_api' %}',
+                        url:'{% url 'API:admin_group_list_api' %}',
                         data:{'ids':ids},
                         dataType:"json",
                         success: function(response) {
@@ -204,25 +203,50 @@ layui.use(['table','layer'],function(){
       if(obj.event === 'edit'){
           layer.open({
               type: 2,
-              title: '编辑管理员',
+              title: '添加权限',
               offset: '100px',
               area : ['500px' , '400px'],
               //closeBtn:false,
               shadeClose: true,
               //btn: ['修改', '取消'],
               scrollbar: false,//禁止浏览器滚动
-              content:'{% url 'Usermanagement:admin_edit' %}'+'?id='+obj.data.id,
+              content:'{% url 'Usermanagement:admin_group_perm' %}'+'?id='+obj.data.id,
                 });
       }
 
-      if(obj.event === 'del') {
+      if(obj.event === 'del_perm_all'){
+          layer.confirm('真的清空权限吗',{offset:'200px'},function (index) {
+              layer.close(index);
+              $.ajax({
+                  type: "DELETE",
+                  headers:{ "X-CSRFtoken":token},
+                  url:'{% url 'API:admin_group_detail_api' %}',
+                  data:{"name":obj.data.name},
+                  dataType:"json",
+                  success: function(response) {
+                            console.log(response);
+                            if(response["status"] === 200){
+                                layer.msg(response["msg"],{time:1300,offset:'300px'},function () {
+                                    table.reload('testReload', {
+                                        page: {curr: 1}
+                                    });
+                                });
+                                layer.close(index)
+                            }
+                            else {alert(response["msg"])}
+                        }
+              })
+          })
+      }
+
+      if(obj.event === 'del'){
           layer.confirm('真的删除行么',{offset:'200px'}, function (index) {
               obj.del();
               layer.close(index);
               $.ajax({
                   type: "DELETE",
                   headers:{ "X-CSRFtoken":token},
-                  url:'{% url 'API:admin_detail_api' %}'+'?id='+obj.data.id,
+                  url:'{% url 'API:admin_group_list_api' %}'+'?id='+obj.data.id,
                   data:{id:obj.data.id},
                   dataType:"json",
                   success: function(response) {
@@ -235,28 +259,24 @@ layui.use(['table','layer'],function(){
                             }
                             else {alert(response["msg"])}
                         }
-
-
-
               })
           });
+
       }
 
-      if(obj.event === 'add_perm'){
+      if(obj.event === 'add_user'){
           layer.open({
               type: 2,
-              title: '编辑管理员',
+              title: '添加权限组用户',
               offset: '100px',
               area : ['500px' , '400px'],
               //closeBtn:false,
               shadeClose: true,
               //btn: ['修改', '取消'],
               scrollbar: false,//禁止浏览器滚动
-              content:'{% url 'Usermanagement:admin_role_add_perm' %}'+'?id='+obj.data.id,
+              content:'{% url 'Usermanagement:admin_group_add_user' %}'+'?id='+obj.data.id,
                 });
-
       }
-
   });
 
 
@@ -264,23 +284,6 @@ layui.use(['table','layer'],function(){
 
 
 });
-</script>
-
-    <!-- 数据表格部分 -->
-<script type="text/html" id="is_superuserTpl">
-  {% verbatim %}{{#  if(d.is_superuser){ }}{% endverbatim %}
-  <span style="color: #F581B1;">超级管理员</span>
-  {% verbatim %}{{#  } else { }}{% endverbatim %}
-  管理员
-  {% verbatim %}{{#  } }}{% endverbatim %}
-</script>
-
-<script type="text/html" id="is_activeTpl">
-    {% verbatim %}{{#  if(d.is_active){ }}{% endverbatim %}
-    <span class="layui-btn layui-btn-normal layui-btn-xs">已启用</span>
-    {% verbatim %}{{#  } else { }}{% endverbatim %}
-    <span class="layui-btn layui-btn-disabled layui-btn-xs">已停用</span>
-    {% verbatim %}{{#  } }}{% endverbatim %}
 </script>
 
 </body>

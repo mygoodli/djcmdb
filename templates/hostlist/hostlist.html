@@ -207,12 +207,6 @@ layui.use(['table','jquery','layer'],function(){
               }
           });
       }
-      if(obj.event === 'del') {
-          layer.confirm('真的删除行么', function (index) {
-              obj.del();
-              layer.close(index);
-          });
-      }
   });
             //end: function (layero,index) {
                //location.reload();

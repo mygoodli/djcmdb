@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
 #输入命令，返回结果
-@permission_required('gamelist.view_task',login_url="error.html")
+@permission_required('gamelist.can_read_BbhGamelist',login_url="error.html")
 @login_required()
 @csrf_exempt
 def saltsack_game_list(request):
@@ -40,7 +40,7 @@ def saltsack_game_list(request):
         return render(request, 'gamelist/gamelist.html')
 
 #展示页面
-#@permission_required('gamelist.view_task',login_url="error.html")
+@permission_required('gamelist.can_read_TwzwGamelist',login_url="error.html")
 @login_required()
 def twzw_table_list(request):
     '''展示页面'''
@@ -186,6 +186,7 @@ def api_twzwtable(request):
 #bbh_list
 
 @login_required()
+@permission_required('gamelist.can_read_BbhGamelist',login_url="error.html")
 def bbh_list(request):
 
     return render(request, 'gamelist/bbh_list.html')

@@ -24,6 +24,13 @@ class TwzwGamelist(models.Model):
         verbose_name_plural="游戏服名字"
         db_table="twzwgamelist"
 
+        permissions = (
+            ("can_read_TwzwGamelist", "读取塔王之王权限"),
+            ("can_change_TwzwGamelist", "更改塔王之王权限"),
+            ("can_add_TwzwGamelist", "添加塔王之王权限"),
+            ("can_delete_TwzwGamelist", "删除塔王之王权限"),
+        )
+
 
 class BbhGamelist(models.Model):
     '''爆兵英雄游戏服列表'''
@@ -54,7 +61,8 @@ class BbhGamelist(models.Model):
         db_table = "bbhgamelist"
 
         permissions = (
-                    ("view_task", "允许访问"),
-                    ("change_task_status", "Can change the status of tasks"),
-                    ("close_task", "Can remove a task by setting its status as closed"),
-                        )
+            ("can_read_BbhGamelist", "读取爆兵英雄权限"),
+            ("can_change_BbhGamelist", "更改爆兵英雄权限"),
+            ("can_add_BbhGamelist", "添加爆兵英雄权限"),
+            ("can_delete_BbhGamelist", "删除爆兵英雄权限"),
+        )

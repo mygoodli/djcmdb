@@ -1,7 +1,7 @@
 from gamelist.models import *
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
+from django.contrib.auth.models import Permission
 
 
 class TwzwGamelistSerializer(serializers.ModelSerializer):
@@ -18,3 +18,4 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id','last_login','is_superuser','username',
                   'first_name','last_name','email','is_active','date_joined')
+

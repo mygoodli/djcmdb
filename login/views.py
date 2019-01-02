@@ -20,23 +20,28 @@ def index(request):
 
 
 def login(request):
+    if request.session.get('is_login', None):
+        return redirect("/index/")
+
     if request.method == "GET":
         login_form = forms.UserForm()
-
         return render(request,'login/login.html',locals())
 
     if request.method == "POST":
         login_form = forms.UserForm(request.POST)
-        message = "请检查填写的内容！"
+        message = "请检查填写的内容！验证码错误"
         if login_form.is_valid():
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
             try:
-                User.objects.get(username=username)
-                user = auth.authenticate(username=username, password=password)
-                if user is not None and user.is_active:
+                user = User.objects.get(username=username)
+                user_auth = auth.authenticate(username=username, password=password)
+                if user_auth is not None and user.is_active:
                     auth.login(request, user)
-                    return render_to_response('index.html',locals())
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.username
+                    return redirect('/index/')
                 else:
                     message = "密码不正确或用户未激活！"
                 return render(request, 'login/login.html', locals())
@@ -44,8 +49,8 @@ def login(request):
                 message = "用户不存在"
                 return render(request,'login/login.html',locals())
 
-    login_form = forms.UserForm()
-    return render(request, 'login/login.html', locals())
+        login_form = forms.UserForm()
+        return render(request, 'login/login.html', locals())
 
 
 def logout_out(request):

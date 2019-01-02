@@ -26,61 +26,14 @@
                 {% csrf_token %}
                 <div class="layui-form-item">
                     <label for="username" class="layui-form-label">
-                        <span class="x-red">*</span>登录名
+                        <span class="x-red">*</span>权限组名
                     </label>
                     <div class="layui-input-inline">
-                        <input type="text" id="username" name="username" required="" lay-verify="username"
-                        autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>将会成为您唯一的登入名
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_email" class="layui-form-label">
-                        <span class="x-red">*</span>邮箱
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="text" id="L_email" name="email" required="" lay-verify="email"
-                        autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        <span class="x-red">*</span>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="role" class="layui-form-label">
-                        <span class="x-red">*</span>角色
-                    </label>
-                    <div class="layui-input-inline">
-                      <select name="role" id="admin_user" lay-verify="required" lay-search>
-                        <option value="">请选择角色</option>
-                        <option value="super">超级管理员</option>
-                        <option value="general">普通用户</option>
-                      </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_pass" class="layui-form-label">
-                        <span class="x-red">*</span>密码
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="password" id="L_pass" name="pass" required="" lay-verify="pass"
-                        autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-form-mid layui-word-aux">
-                        6到16个字符
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label for="L_repass" class="layui-form-label">
-                        <span class="x-red">*</span>确认密码
-                    </label>
-                    <div class="layui-input-inline">
-                        <input type="password" id="L_repass" name="repass" required="" lay-verify="repass"
+                        <input type="text" id="groupname" name="groupname" required="" lay-verify="groupname"
                         autocomplete="off" class="layui-input">
                     </div>
                 </div>
+
                 <div class="layui-form-item">
                     <label for="L_repass" class="layui-form-label">
                     </label>
@@ -97,7 +50,7 @@
 
               //自定义验证规则
               form.verify({
-                  username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                  groupname: function(value, item){ //value：表单的值、item：表单的DOM对象
                       if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
                           return '用户名不能有特殊字符';
                       }
@@ -127,13 +80,9 @@
                     type: "POST",
                     dataType: "json",
                     headers:{ "X-CSRFtoken":token},
-                    url: "{% url 'API:admin_list_api' %}",
+                    url: "{% url 'API:admin_group_list_api' %}",
                     data: {
-                        username: $('#username').val(),
-                        email: $('#L_email').val(),
-                        role: $('#admin_user').val(),
-                        infopass: $('#L_pass').val(),
-                        repass: $('#L_repass').val(),
+                        groupname: $('#groupname').val(),
                     },
                     success: function (response) {
                         console.log(response);
@@ -151,7 +100,7 @@
 
                         }
                         else {
-                            layer.msg(response["user"]+response["msg"])
+                            layer.msg(response["msg"])
                         }
 
                     }
