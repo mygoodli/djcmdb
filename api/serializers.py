@@ -7,7 +7,7 @@ from django.contrib.auth.models import Permission
 class TwzwGamelistSerializer(serializers.ModelSerializer):
     class Meta:
         model =  TwzwGamelist
-        fields = ('options','serverid','gamedir','server_port','db_port','serverip','domain_name','gamename','slave_db'
+        fields = ('options','serverid','gamedir','server_port','db_port','serverip','domain_name','gamename','subordinate_db'
                   ,'message','c_time')
 
 class UserSerializer(serializers.ModelSerializer):

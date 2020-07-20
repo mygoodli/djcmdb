@@ -90,7 +90,7 @@ def table_req_data_api(request):
                         "serverip": row.serverip,
                         "domain_name": row.domain_name,
                         "gamename": row.gamename,
-                        "slave_db": row.slave_db,
+                        "subordinate_db": row.subordinate_db,
                         "message": row.message
                     })
                 return JsonResponse(data)
@@ -115,7 +115,7 @@ def table_req_data_api(request):
                         "serverip": row.serverip,
                         "domain_name": row.domain_name,
                         "gamename": row.gamename,
-                        "slave_db": row.slave_db,
+                        "subordinate_db": row.subordinate_db,
                         "message": row.message
                         })
                 return JsonResponse(data)
@@ -138,7 +138,7 @@ def table_req_data_api(request):
                     "serverip": row.serverip,
                     "domain_name": row.domain_name,
                     "gamename": row.gamename,
-                    "slave_db": row.slave_db,
+                    "subordinate_db": row.subordinate_db,
                     "message": row.message
                 })
             return JsonResponse(data)
@@ -161,7 +161,7 @@ def api_twzwtable(request):
         serverip = request.POST.get('serverip')
         domain_name = request.POST.get('domain_name')
         gamename = request.POST.get('gamename')
-        slave_db = request.POST.get('slave_db')
+        subordinate_db = request.POST.get('subordinate_db')
         message = request.POST.get('message')
 
         try:
@@ -174,7 +174,7 @@ def api_twzwtable(request):
                 serverip=serverip,
                 domain_name=domain_name,
                 gamename=gamename,
-                slave_db=slave_db,
+                subordinate_db=subordinate_db,
                 message=message
             )
             return HttpResponse('添加成功')

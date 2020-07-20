@@ -12,7 +12,7 @@ class TwzwGamelist(models.Model):
     serverip = models.CharField(max_length=128,verbose_name="游戏服ip")
     domain_name = models.CharField(max_length=256,verbose_name="域名")
     gamename = models.CharField(max_length=256,verbose_name="游戏服名字")
-    slave_db = models.CharField(max_length=256,verbose_name="游戏服从库ip")
+    subordinate_db = models.CharField(max_length=256,verbose_name="游戏服从库ip")
     message = models.CharField(max_length=256,verbose_name="附加信息")
     c_time = models.DateTimeField(auto_now_add=True)
 
